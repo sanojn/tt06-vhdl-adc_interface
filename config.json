@@ -3,9 +3,9 @@
   "VHDL_FILES": ["dir::src/top.vhdl", "dir::src/decoder.vhdl"],
 
   "FP_SIZING": "absolute",
-  "DIE_AREA": "0 0 157.32 111.52",
-  "FP_DEF_TEMPLATE": "dir::tt-custom-gds/tt_block_1x1_pg.def",
-
+  "DIE_AREA": [0, 0, 161.00, 111.52],
+  "FP_DEF_TEMPLATE": "dir::def/tt_block_1x1_pg.def",
+  
   "FP_IO_HLENGTH": 2,
   "FP_IO_VLENGTH": 2,
 
