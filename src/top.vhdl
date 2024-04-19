@@ -2,8 +2,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
-entity tt_um_vhdl_seven_segment_seconds is
-    generic (MAX_COUNT : natural := 10_000_000);
+entity tt_um_sanojn_tlv2556_interface is
     port (
         ui_in   : in  std_logic_vector(7 downto 0);
         uo_out  : out std_logic_vector(7 downto 0);
@@ -14,45 +13,44 @@ entity tt_um_vhdl_seven_segment_seconds is
         clk     : in  std_logic;
         rst_n   : in  std_logic
     );
-end tt_um_vhdl_seven_segment_seconds;
+end tt_um_sanojn_tlv2556_interface;
 
-architecture Behavioral of tt_um_vhdl_seven_segment_seconds is
-    signal reset          : std_logic;
-    signal led_out        : std_logic_vector(6 downto 0);
-    signal second_counter : std_logic_vector(23 downto 0) := (others => '0');
-    signal digit          : std_logic_vector(3 downto 0) := (others => '0');
-    signal compare        : std_logic_vector(23 downto 0);
+architecture Wrapper of tt_um_sanojn_tlv2556_interface is
+  component top is
+    port (clk    : in  STD_LOGIC;
+          rstn   : in  STD_LOGIC;
+          
+          adc_clk: out STD_LOGIC;
+          adc_cs : out STD_LOGIC;
+          adc_din: out STD_LOGIC;
+          adc_dout: in STD_LOGIC;
+          adc_eoc: in STD_LOGIC;
+        
+          RxD    : in STD_LOGIC;
+          TxD    : out STD_LOGIC;
+          RTSn   : out STD_LOGIC;
+          CTSn   : in  STD_LOGIC
+    );
+  end component top;
 begin
+  core: top port map(
+    clk      => clk,
+    rstn     => rst_n,
+    adc_dout => ui_in(0), 
+    adc_eoc  => ui_in(1),
+    RxD      => ui_in(2),
+    CTSn     => ui_in(3),
+    
+    adc_clk => uo_out(0), 
+    adc_cs  => uo_out(1), 
+    adc_din => uo_out(2), 
+    TxD     => uo_out(3), 
+    RTSn    => uo_out(4) 
 
-    reset <= not rst_n;
-    uo_out(6 downto 0) <= led_out;
-    uo_out(7) <= '0';
-    uio_oe <= (others => '1');
-    uio_out <= std_logic_vector(second_counter(7 downto 0));
+  );
 
-    process(clk)
-    begin
-        if rising_edge(clk) then
-            if reset = '1' then
-                second_counter <= (others => '0');
-                digit <= (others => '0');
-            else
-                if second_counter = compare then
-                    second_counter <= (others => '0');
-                    if digit = "1001" then
-                        digit <= (others => '0');
-                    else
-                        digit <= std_logic_vector(unsigned(digit) + 1);
-                    end if;
-                else
-                    second_counter <= std_logic_vector(unsigned(second_counter) + 1);
-                end if;
-            end if;
-        end if;
-    end process;
+  uo_out(7 downto 5) <= "000";
+  uio_out <= "00000000";
+  uio_oe  <= "00000000";
 
-    compare <= "000000" & ui_in & "0000000000" when ui_in /= "00000000" else std_logic_vector(to_unsigned(MAX_COUNT, 24));
-
-    seg7_inst : entity work.seg7 port map(counter => digit, segments => led_out);
-
-end Behavioral;
+end architecture Wrapper;

@@ -9,19 +9,17 @@ You can also include images in this folder and reference them in the markdown. E
 
 ## How it works
 
-Uses a set of registers to divide the clock, and then some combinational logic
-to convert from binary to decimal for the display.
-
-Puts the bottom 8 bits of the counter on the bidirectional outputs.
-
-With all the inputs set to 0, the internal 24 bit compare is set to 10,000,000. This means the
-counter will increment by one each second.
-
-If any inputs are non zero, then the input will be used as an bits 11 to 18 of the 24 bit compare register.
-Example: setting the inputs to 00010000 will program 16384 into the compare register.
-With a 10MHz clock the counter will increment ~610 times per second.
+This design is an interface that allows a TI TLV2556 ADC to be controlled via a UART. The ADC settings are static. The UART interface allows prompting a conversion and will receive the measured value as human readable values. 
 
 ## How to test
 
-After reset, the counter should increase by one every second with a 10MHz input clock.
-Experiment by changing the inputs to change the counting speed.
+Requires a 48 MHz clock.
+
+Connect a TLV2556 and a UART to the appropriate pins. Note that the CTS and RTS pins have opposite polarity as they're intended to be connected directly to a CH340 UART-over-USB chip.
+
+Connect with a terminal emulator set to 230400 Baud, 8N1.
+
+Send a single hexadecimal character from 0 to B over the serial port. The digit represents the channel you wish to convert. The design will cause the tlv2556 to do a conversion, read out the measured value and send it back in human readable form over the serial port.
+
+Type CR or LF to enter "continuous mode". The design will loop through all channels, converting each in turn, and print a page worth of measured values to the serial port.
+

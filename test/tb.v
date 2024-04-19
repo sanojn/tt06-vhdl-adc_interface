@@ -28,7 +28,7 @@ module tb ();
     wire [7:0] uio_out;
     wire [7:0] uio_oe;
 
-    tt_um_vhdl_seven_segment_seconds dut (
+    tt_um_sanojn_tlv2556_interface dut (
     // include power ports for the Gate Level test
     `ifdef GL_TEST
         .VPWR( 1'b1),

@@ -1,6 +1,6 @@
 {
-  "DESIGN_NAME": "tt_um_vhdl_seven_segment_seconds",
-  "VHDL_FILES": ["dir::src/top.vhdl", "dir::src/decoder.vhdl"],
+  "DESIGN_NAME": "tt_um_sanojn_tlv2556_interface",
+  "VHDL_FILES": ["dir::src/top.vhdl", "dir::src/top.vhd", "dir::src/uart.vhd"],
 
   "FP_SIZING": "absolute",
   "DIE_AREA": [0, 0, 161.00, 111.52],
